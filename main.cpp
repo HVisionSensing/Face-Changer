@@ -8,7 +8,9 @@
 #include "opencvheader.h"
 #include "UnveilinWaves.h"
 #include "ViewPointSimulation.h"
-
+#ifndef min
+#define min(x, y) ((x<y)? (x):(y))
+#endif
 
 // Image size (pixels)
 #define	IMG_WIDTH			144 / 2
