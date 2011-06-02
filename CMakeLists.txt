@@ -1,0 +1,17 @@
+CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
+PROJECT( DIPFinal )
+
+#SET( BUILD_SHARED_LIBS ON )
+#SET( CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-undefined" )
+
+FIND_PACKAGE( OpenCV REQUIRED )
+LINK_LIBRARIES( ${OpenCV_LIBS} )
+INCLUDE_DIRECTORIES( ${OpenCV_INCLUDE_DIR} )
+
+ADD_LIBRARY( UnveilinWaves UnveilinWaves.cpp )
+ADD_LIBRARY( ViewPointSimulation ViewPointSimulation.cpp )
+SET( EXTRA_LIBS UnveilinWaves ViewPointSimulation )
+
+ADD_EXECUTABLE( DIPFinal main.cpp )
+
+TARGET_LINK_LIBRARIES( DIPFinal ${EXTRA_LIBS} )
