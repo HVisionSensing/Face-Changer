@@ -235,7 +235,7 @@ int UnveilinWaves::ProcessRotates(IplImage *showImg)
   cvCopy(rotated, showImg, NULL);
   cvReleaseImage(&rotated);
 
-  if(_angle > -177){
+  if(_angle > -132){
 	_angle -= 2;
 	rotateFound = 1;
   }
@@ -300,7 +300,10 @@ IplImage *UnveilinWaves::rotateImage(const IplImage *src, float angleDegrees)
   m[4] = m[0];
   m[2] = w*0.5f;  
   m[5] = h*0.5f;  
-
+  /*
+   * [cos(rad), sin(rad), width*0.5  ]
+   * [-sin(rad), cos(rad), height*0.5]
+  */
   // Make a spare image for the result
   CvSize sizeRotated;
   sizeRotated.width = cvRound(w);

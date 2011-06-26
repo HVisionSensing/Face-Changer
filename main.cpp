@@ -100,11 +100,11 @@ void UpdateEnabledTime(int64 enable_time[],  const int &idx, const int64 &now_ti
   enable_time[idx] = now_time;
   delay_sec = 0.1;
   // Left-Up
-  key = idx - IMG_COL_NUM - 1;
+  /*key = idx - IMG_COL_NUM - 1;
   if (key >= 0 && key < IMG_COL_NUM * IMG_ROW_NUM && enable_time[key] == 0 && (idx % IMG_COL_NUM > 0)) {
     enable_time[key] = (int64) (now_time + freq * delay_sec);
     delay_sec += 0.2;
-  }
+  }*/
   // Upside
   key = idx - IMG_COL_NUM;
   if (key >= 0 && key < IMG_COL_NUM * IMG_ROW_NUM && enable_time[key] == 0) {
@@ -112,11 +112,11 @@ void UpdateEnabledTime(int64 enable_time[],  const int &idx, const int64 &now_ti
     delay_sec += 0.2;
   }
   // Right-Up
-  key = idx - IMG_COL_NUM + 1;
+  /*key = idx - IMG_COL_NUM + 1;
   if (key >= 0 && key < IMG_COL_NUM * IMG_ROW_NUM && enable_time[key] == 0 && (idx % IMG_COL_NUM < IMG_COL_NUM - 1)) {
     enable_time[key] = (int64) (now_time + freq * delay_sec);
     delay_sec += 0.2;
-  }
+  }*/
   // Right
   key = idx + 1;
   if (key >= 0 && key < IMG_COL_NUM * IMG_ROW_NUM && enable_time[key] == 0 && (idx % IMG_COL_NUM < IMG_COL_NUM - 1)) {
@@ -124,11 +124,11 @@ void UpdateEnabledTime(int64 enable_time[],  const int &idx, const int64 &now_ti
     delay_sec += 0.2;
   }
   // Right-down
-  key = idx + IMG_COL_NUM + 1;
+  /*key = idx + IMG_COL_NUM + 1;
   if (key >= 0 && key < IMG_COL_NUM * IMG_ROW_NUM && enable_time[key] == 0 && (idx % IMG_COL_NUM < IMG_COL_NUM - 1)) {
     enable_time[key] = (int64) (now_time + freq * delay_sec);
     delay_sec += 0.2;
-  }
+  }*/
   // Downside
   key = idx + IMG_COL_NUM;
   if (key >= 0 && key < IMG_COL_NUM * IMG_ROW_NUM && enable_time[key] == 0) {
@@ -136,11 +136,11 @@ void UpdateEnabledTime(int64 enable_time[],  const int &idx, const int64 &now_ti
     delay_sec += 0.2;
   }
   // Left-down
-  key = idx + IMG_COL_NUM - 1;
+  /*key = idx + IMG_COL_NUM - 1;
   if (key >= 0 && key < IMG_COL_NUM * IMG_ROW_NUM && enable_time[key] == 0 && (idx % IMG_COL_NUM > 0)) {
     enable_time[key] = (int64) (now_time + freq * delay_sec);
     delay_sec += 0.2;
-  }
+  }*/
   // Left
   key = idx - 1;
   if (key >= 0 && key < IMG_COL_NUM * IMG_ROW_NUM && enable_time[key] == 0 && (idx % IMG_COL_NUM > 0)) {
@@ -148,28 +148,31 @@ void UpdateEnabledTime(int64 enable_time[],  const int &idx, const int64 &now_ti
   }
 
   // Left
-  key = idx - 2;
+  /*key = idx - 2;
   if (key >= 0 && key < IMG_COL_NUM * IMG_ROW_NUM && enable_time[key] == 0 && (idx % IMG_COL_NUM > 0)) {
     enable_time[key] = (int64) (now_time + freq * delay_sec);
-  }
+  }*/
 
   // Left
+  /*
   key = idx - 2 * IMG_COL_NUM;
   if (key >= 0 && key < IMG_COL_NUM * IMG_ROW_NUM && enable_time[key] == 0 && (idx % IMG_COL_NUM > 0)) {
     enable_time[key] = (int64) (now_time + freq * delay_sec);
-  }
+  }*/
 
   // Left
+  /*
   key = idx + 2;
   if (key >= 0 && key < IMG_COL_NUM * IMG_ROW_NUM && enable_time[key] == 0 && (idx % IMG_COL_NUM > 0)) {
     enable_time[key] = (int64) (now_time + freq * delay_sec);
-  }
+  }*/
 
   // Left
+  /*
   key = idx + 2 * IMG_COL_NUM;
   if (key >= 0 && key < IMG_COL_NUM * IMG_ROW_NUM && enable_time[key] == 0 && (idx % IMG_COL_NUM > 0)) {
     enable_time[key] = (int64) (now_time + freq * delay_sec);
-  }
+  }*/
 
 
 }
