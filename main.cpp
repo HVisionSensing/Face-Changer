@@ -83,6 +83,69 @@ IplImage *LoadAndResizeImage(const char* filename, int Height, int Width)
   return Img;
 }
 
+
+// 
+void UpdateEnabledTime(int64 enable_time[],  const int &idx, const int64 &now_time, const double &freq)
+{
+  double delay_sec;
+  int key;
+
+  // Set unveiling effect enable times, clockwise
+  // Center
+  enable_time[idx] = now_time;
+  delay_sec = 0.2;
+  // Left-Up
+  key = idx - IMG_COL_NUM - 1;
+  if (key >= 0 && key < IMG_COL_NUM * IMG_ROW_NUM && enable_time[key] == 0 && (idx % IMG_COL_NUM > 0)) {
+    enable_time[key] = (int64) (now_time + freq * delay_sec);
+    delay_sec += 0.2;
+  }
+  // Upside
+  key = idx - IMG_COL_NUM;
+  if (key >= 0 && key < IMG_COL_NUM * IMG_ROW_NUM && enable_time[key] == 0) {
+    enable_time[key] = (int64) (now_time + freq * delay_sec);
+    delay_sec += 0.2;
+  }
+  // Right-Up
+  key = idx - IMG_COL_NUM + 1;
+  if (key >= 0 && key < IMG_COL_NUM * IMG_ROW_NUM && enable_time[key] == 0 && (idx % IMG_COL_NUM < IMG_COL_NUM - 1)) {
+    enable_time[key] = (int64) (now_time + freq * delay_sec);
+    delay_sec += 0.2;
+  }
+  // Right
+  key = idx + 1;
+  if (key >= 0 && key < IMG_COL_NUM * IMG_ROW_NUM && enable_time[key] == 0 && (idx % IMG_COL_NUM < IMG_COL_NUM - 1)) {
+    enable_time[key] = (int64) (now_time + freq * delay_sec);
+    delay_sec += 0.2;
+  }
+  // Right-down
+  key = idx + IMG_COL_NUM + 1;
+  if (key >= 0 && key < IMG_COL_NUM * IMG_ROW_NUM && enable_time[key] == 0 && (idx % IMG_COL_NUM < IMG_COL_NUM - 1)) {
+    enable_time[key] = (int64) (now_time + freq * delay_sec);
+    delay_sec += 0.2;
+  }
+  // Downside
+  key = idx + IMG_COL_NUM;
+  if (key >= 0 && key < IMG_COL_NUM * IMG_ROW_NUM && enable_time[key] == 0) {
+    enable_time[key] = (int64) (now_time + freq * delay_sec);
+    delay_sec += 0.2;
+  }
+  // Left-down
+  key = idx + IMG_COL_NUM - 1;
+  if (key >= 0 && key < IMG_COL_NUM * IMG_ROW_NUM && enable_time[key] == 0 && (idx % IMG_COL_NUM > 0)) {
+    enable_time[key] = (int64) (now_time + freq * delay_sec);
+    delay_sec += 0.2;
+  }
+  // Left
+  key = idx - 1;
+  if (key >= 0 && key < IMG_COL_NUM * IMG_ROW_NUM && enable_time[key] == 0 && (idx % IMG_COL_NUM > 0)) {
+    enable_time[key] = (int64) (now_time + freq * delay_sec);
+  }
+
+}
+
+
+
 int main(int argc, char** argv)
 {	
   const char *imagename = argc > 1 ? argv[1] : "./ArtImgSrc/000.jpg";  
@@ -101,7 +164,6 @@ int main(int argc, char** argv)
   int64 now_time;
   double freq = cv::getTickFrequency();						// Tick frequency
   int key, idx;
-  double delay_sec;
 
 
   srand((unsigned int) time(NULL));
@@ -180,58 +242,9 @@ int main(int argc, char** argv)
     idx = simulationObj.Simulation(realPT, simPT);
 
     if (idx >= 0) {
-      // Set unveiling effect enable times, clockwise
-      // Center
-      enable_time[idx] = now_time;
-      delay_sec = 0.2;
-      // Left-Up
-      key = idx - IMG_COL_NUM - 1;
-      if (key >= 0 && key < IMG_COL_NUM * IMG_ROW_NUM && enable_time[key] == 0 && (idx % IMG_COL_NUM > 0)) {
-        enable_time[key] = (int64) (now_time + freq * delay_sec);
-        delay_sec += 0.2;
-      }
-      // Upside
-      key = idx - IMG_COL_NUM;
-      if (key >= 0 && key < IMG_COL_NUM * IMG_ROW_NUM && enable_time[key] == 0) {
-        enable_time[key] = (int64) (now_time + freq * delay_sec);
-        delay_sec += 0.2;
-      }
-      // Right-Up
-      key = idx - IMG_COL_NUM + 1;
-      if (key >= 0 && key < IMG_COL_NUM * IMG_ROW_NUM && enable_time[key] == 0 && (idx % IMG_COL_NUM < IMG_COL_NUM - 1)) {
-        enable_time[key] = (int64) (now_time + freq * delay_sec);
-        delay_sec += 0.2;
-      }
-      // Right
-      key = idx + 1;
-      if (key >= 0 && key < IMG_COL_NUM * IMG_ROW_NUM && enable_time[key] == 0 && (idx % IMG_COL_NUM < IMG_COL_NUM - 1)) {
-        enable_time[key] = (int64) (now_time + freq * delay_sec);
-        delay_sec += 0.2;
-      }
-      // Right-down
-      key = idx + IMG_COL_NUM + 1;
-      if (key >= 0 && key < IMG_COL_NUM * IMG_ROW_NUM && enable_time[key] == 0 && (idx % IMG_COL_NUM < IMG_COL_NUM - 1)) {
-        enable_time[key] = (int64) (now_time + freq * delay_sec);
-        delay_sec += 0.2;
-      }
-      // Downside
-      key = idx + IMG_COL_NUM;
-      if (key >= 0 && key < IMG_COL_NUM * IMG_ROW_NUM && enable_time[key] == 0) {
-        enable_time[key] = (int64) (now_time + freq * delay_sec);
-        delay_sec += 0.2;
-      }
-      // Left-down
-      key = idx + IMG_COL_NUM - 1;
-      if (key >= 0 && key < IMG_COL_NUM * IMG_ROW_NUM && enable_time[key] == 0 && (idx % IMG_COL_NUM > 0)) {
-        enable_time[key] = (int64) (now_time + freq * delay_sec);
-        delay_sec += 0.2;
-      }
-      // Left
-      key = idx - 1;
-      if (key >= 0 && key < IMG_COL_NUM * IMG_ROW_NUM && enable_time[key] == 0 && (idx % IMG_COL_NUM > 0)) {
-        enable_time[key] = (int64) (now_time + freq * delay_sec);
-      }
 
+      // Update the activated time of each image
+      UpdateEnabledTime(enable_time, idx, now_time, freq);
 
       // Start to play
       for (int i = 0; i < IMG_COL_NUM * IMG_ROW_NUM; i++) {
