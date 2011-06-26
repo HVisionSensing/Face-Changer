@@ -19,10 +19,11 @@
 
 // Put 4 X 7 images in a window screen
 #define IMG_ROW_NUM			4
-#define IMG_COL_NUM			11
+#define IMG_COL_NUM			8
 
 
 CvPoint MousePT;
+int effect = 0;
 
 
 void on_mouse( int event, int x, int y, int flags, void* param )
@@ -33,9 +34,13 @@ void on_mouse( int event, int x, int y, int flags, void* param )
       break;
 
     case CV_EVENT_LBUTTONDOWN:
+      effect += 1;
+      if(effect > 2)effect = 0;
       break;
 
     case CV_EVENT_RBUTTONDOWN:
+      effect -= 1;
+      if(effect < 0)effect = 2;
       break;
 
     default:
@@ -250,7 +255,7 @@ int main(int argc, char** argv)
 
       // Start to play
       for (int i = 0; i < IMG_COL_NUM * IMG_ROW_NUM; i++) {
-        if (unveilinEffect[i]._weHaveRotates == 1) {										// Playing
+        if (unveilinEffect[i]._weHaveEffects == 1) {										// Playing
           continue;
         }
         if (changeOrder[i] == 1) {														// Change from foreground image to background image
@@ -282,8 +287,21 @@ int main(int argc, char** argv)
     for (int i = 0; i < IMG_COL_NUM * IMG_ROW_NUM; i++) {
       if (start_time[i]) {
         if (now_time - start_time[i] > freq * last_effect_num[i] / 30) {	// play for 30 fps
-          if (unveilinEffect[i]._weHaveRotates == 1){
-            unveilinEffect[i].ProcessRotates(singleUnveilingImg[i]);
+          if (unveilinEffect[i]._weHaveEffects == 1){
+            switch(effect){
+              case 0:
+                //unveilinEffect[i].ProcessWaves(singleUnveilingImg[i]);
+                unveilinEffect[i].ProcessRotates(singleUnveilingImg[i]);
+                break;
+              case 1:
+                unveilinEffect[i].ProcessSmooth(singleUnveilingImg[i]);
+                break;
+              case 2:
+                unveilinEffect[i].ProcessDilate(singleUnveilingImg[i]);
+                break;
+              defaut:
+                ;
+            }
             last_effect_num[i]++;
           }
           else {	// End

@@ -12,8 +12,9 @@ class UnveilinWaves
     int SetImage(const IplImage *img1, const IplImage *img2);
     void PutDrop(int x, int y, short height);
     int ProcessWaves(IplImage *showImg);
-    int _weHaveWaves;
-	int _weHaveRotates;
+    int _weHaveWaves; //deprecated
+	int _weHaveRotates; //deprecated
+    int _weHaveEffects;
     int ProcessRotates(IplImage *showImg);
     int ProcessNegate(IplImage *showImg);
     int ProcessSmooth(IplImage *showImg, int smoothType=CV_GAUSSIAN);

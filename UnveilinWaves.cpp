@@ -107,8 +107,8 @@ int UnveilinWaves::SetImage(const IplImage *img1, const IplImage *img2)
 }
 
 void UnveilinWaves::PutDrop(int x, int y, short height){
-  _weHaveWaves = 1;
-  _weHaveRotates = 1;
+  _weHaveEffects = 1;
+  _weHaveEffects = 1;
   int radius = 10;
   double dist;
 
@@ -216,7 +216,7 @@ int UnveilinWaves::ProcessWaves(IplImage *showImg)
 
     }
   }
-  _weHaveWaves = wavesFound;
+  _weHaveEffects = wavesFound;
   _activeBuffer = newBuffer;
   //			printf("_weHaveWaves = %d\n", _weHaveWaves);
   //			printf("_iplimage origin=%d\n", showImg->origin);
@@ -226,28 +226,19 @@ int UnveilinWaves::ProcessWaves(IplImage *showImg)
 
 int UnveilinWaves::ProcessRotates(IplImage *showImg) 
 {
-  //double angle = 1.5f;
   int rotateFound = 0;
-  /*if(!isBackUp){
-	if(showImg){
-	  ori = cvCloneImage(showImg);
-	  isBackUp = true;
-	}
+  if(_angle > 1){
+	_angle -= 2;
+	rotateFound = 1;
   }
-  else{*/
-	if(_angle > 1){
-		_angle -= 2;
-		rotateFound = 1;
-	}
-    m_angle += _angle;
-    if(m_angle > 360.0f)m_angle -= 360.0f; 
-	
-	IplImage *rotated = rotateImage(ori, m_angle);
-	cvCopy(rotated, showImg, NULL);
-	cvReleaseImage(&rotated);
+  m_angle += _angle;
+  if(m_angle > 360.0f)m_angle -= 360.0f; 
+  IplImage *rotated = rotateImage(ori, m_angle);
+  cvCopy(rotated, showImg, NULL);
+  cvReleaseImage(&rotated);
     
 	
-	_weHaveRotates = rotateFound;
+  _weHaveEffects = rotateFound;
   //}
   return 0;
 }

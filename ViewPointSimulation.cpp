@@ -1,13 +1,17 @@
 #include "ViewPointSimulation.h"
 
 
+
 // TODO: need to be fixed
 double gaussian(double sigma) {
+    /*
   double mean = 0.2f;
   CvRNG rng = cvRNG(cv::getTickCount());
   IplImage *img = cvCreateImage(cvSize(1, 1), IPL_DEPTH_8U, 3);
   cvRandArr(&rng, img, CV_RAND_NORMAL, cvScalar(mean), cvScalar(sigma));
-  return (double)img->imageData[0];
+  return (double)img->imageData[0];*/
+  srand(time(NULL));
+  return (double)(rand()%1000+1)/1000*sigma;
 }
 
 
@@ -78,22 +82,82 @@ int ViewPointSimulation::Simulation(const int in_x, const int in_y,int &out_x, i
 		else {
 			bias_pt.y = (int) ((gaussian(0.25f) + 0.7) * in_y);
 		}
-
-		last_sim_pt.x = out_x = (int) (bias_pt.x + gaussian(m_sigma));
-		last_sim_pt.y = out_y = (int) (bias_pt.y + gaussian(m_sigma));
+        int t_x = (int) (bias_pt.x + gaussian(m_sigma));
+        int t_y = (int) (bias_pt.y + gaussian(m_sigma));
+        if(t_x - last_sim_pt.x != 0){
+            speed[0] += (t_x - last_sim_pt.x);
+            interval = 4;
+        }
+        if(t_y - last_sim_pt.y != 0){
+            speed[1] += (t_y - last_sim_pt.y);
+            interval = 4;
+        }
+		if(interval){
+            if(speed[0]>0){
+                t_x += speed[0]/interval ? speed[0]/interval : 1;
+                speed[0] -= speed[0]/interval ? speed[0]/interval : 1;
+            }
+            else if(speed[0]<0){
+                t_x += speed[0]/interval ? speed[0]/interval : -1;
+                speed[0] -= speed[0]/interval ? speed[0]/interval : -1;
+            }
+            if(speed[1]>0){
+                t_y += speed[1]/interval ? speed[1]/interval : 1;
+                speed[1] -= speed[1]/interval ? speed[1]/interval : 1;
+            }
+            else if(speed[1]<0){
+                t_y += speed[1]/interval ? speed[1]/interval : -1;
+                speed[1] -= speed[0]/interval ? speed[1]/interval : -1;
+            }
+            interval -= 1;
+        }
+        if(t_y >= screen_height - origin_pt.y)t_y = screen_height - origin_pt.y - 1;
+        else if(t_y < -origin_pt.y)t_y = -origin_pt.y;
+        if(t_x >= screen_width - origin_pt.x)t_x = screen_width - origin_pt.x - 1;
+        else if(t_x < -origin_pt.x)t_x = -origin_pt.x;
+        
+        last_sim_pt.x = out_x = t_x;
+		last_sim_pt.y = out_y = t_y;
+        
 		last_pt.x = in_x;
 		last_pt.y = in_y;
 	}
 	else {
-		out_x = last_sim_pt.x;
-		out_y = last_sim_pt.y;
+        //speed[0] = t_x - last_sim_pt.x;
+        //speed[1] = t_y - last_sim_pt.y;
+		int t_x = last_sim_pt.x;
+        int t_y = last_sim_pt.y;
+        if(interval){
+            if(speed[0]>0){
+                t_x += speed[0]/interval ? speed[0]/interval : 1;
+                speed[0] -= speed[0]/interval ? speed[0]/interval : 1;
+            }
+            else if(speed[0]<0){
+                t_x += speed[0]/interval ? speed[0]/interval : -1;
+                speed[0] -= speed[0]/interval ? speed[0]/interval : -1;
+            }
+            if(speed[1]>0){
+                t_y += speed[1]/interval ? speed[1]/interval : 1;
+                speed[1] -= speed[1]/interval ? speed[1]/interval : 1;
+            }
+            else if(speed[1]<0){
+                t_y += speed[1]/interval ? speed[1]/interval : -1;
+                speed[1] -= speed[0]/interval ? speed[1]/interval : -1;
+            }
+            interval-=1;
+        }
+		out_x = t_x;
+		out_y = t_y;
 	}
+    if(out_y >= screen_height - origin_pt.y)last_sim_pt.y = out_y = screen_height - origin_pt.y - 1;
+    else if(out_y < -origin_pt.y)last_sim_pt.y = out_y = -origin_pt.y;
+    if(out_x >= screen_width - origin_pt.x)last_sim_pt.x = out_x = screen_width - origin_pt.x - 1;
+    else if(out_x < -origin_pt.x)last_sim_pt.x = out_x = -origin_pt.x;
 
-
-	if (out_x < -origin_pt.x || out_x >= screen_width - origin_pt.x ||
+	/*if (out_x < -origin_pt.x || out_x >= screen_width - origin_pt.x ||
 		out_y < -origin_pt.y || out_y >= screen_height - origin_pt.y) {
 		return -1;
-	}
+	}*/
 
 
 	return (out_y + origin_pt.y) / (m_PixelHeight + 2 * m_PixelHalfBlack) * m_ColNum + (out_x + origin_pt.x) / (m_PixelWidth + 2 * m_PixelHalfBlack);
@@ -101,6 +165,8 @@ int ViewPointSimulation::Simulation(const int in_x, const int in_y,int &out_x, i
 
 void ViewPointSimulation::Reset()
 {
+    speed[0] = 0;
+    speed[1] = 0;
 	m_start = 0;
 	m_sigma = 1.0f;
 	last_rng_time = 0;

@@ -3,12 +3,15 @@
 
 
 #include "opencvheader.h"
+#include <time.h>
 
 
 class ViewPointSimulation
 {
 private:
 	int m_start;
+    int speed[2];
+    int interval;
   cv::RNG rng;			// Random number generator 
 	double m_sigma;
 	int64 last_rng_time;	// Last generate random number time
