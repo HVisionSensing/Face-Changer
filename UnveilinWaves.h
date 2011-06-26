@@ -13,14 +13,17 @@ class UnveilinWaves
     void PutDrop(int x, int y, short height);
     int ProcessWaves(IplImage *showImg);
     int _weHaveWaves;
-
-    int ProcessRotate(IplImage *showImg);
+	int _weHaveRotates;
+    int ProcessRotates(IplImage *showImg);
 
   private:
     IplImage *rotateImage(const IplImage *src, float angleDegrees);
 
 
   protected:
+    bool isBackUp;
+	double m_angle;
+    IplImage *ori;
     bool isLoaded;
     int m_height;
     int m_width;
@@ -30,6 +33,7 @@ class UnveilinWaves
     int _waveHeight;
     int _activeBuffer;
     int _scale;
+	int _angle;
     uchar* tmpeBytes;
 };
 

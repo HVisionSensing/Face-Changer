@@ -18,6 +18,8 @@ UnveilinWaves::UnveilinWaves()
   //chunku=================
 
   isLoaded = false;
+  ori = NULL;
+  m_angle = 0;
 }
 
 UnveilinWaves::UnveilinWaves(const IplImage *img1, const IplImage *img2)
@@ -34,6 +36,9 @@ UnveilinWaves::UnveilinWaves(const IplImage *img1, const IplImage *img2)
 
     isLoaded = false;
   }
+  m_angle = 0.0f;
+  ori = NULL;
+
 
 }
 
@@ -57,6 +62,7 @@ void UnveilinWaves::Reset()
   m_height = 0;
   m_width = 0;
   m_img[0] = NULL;
+  ori = NULL;
   m_img[1] = NULL;
   //chunku 0820 12:12
   _activeBuffer = 0;
@@ -78,10 +84,12 @@ int UnveilinWaves::SetImage(const IplImage *img1, const IplImage *img2)
   m_height = img1->height;
   m_width = img1->width;
   m_img[0] = cvCloneImage(img1);
+  ori = cvCloneImage(img1);
   m_img[1] = cvCreateImage( cvSize(m_width, m_height), IPL_DEPTH_8U, 3);
   cvResize(img2, m_img[1], CV_INTER_CUBIC);
   /*  chunku 0820 12:11 */
 
+  _angle = 359;
   _waveWidth = m_width >> _scale;
   _waveHeight = m_height >> _scale;
   _waves = new short** [_waveWidth];
@@ -95,12 +103,12 @@ int UnveilinWaves::SetImage(const IplImage *img1, const IplImage *img2)
   }
   /*-----三維不能直接 new----------*/
   isLoaded = true;
-
   return 0;
 }
 
 void UnveilinWaves::PutDrop(int x, int y, short height){
   _weHaveWaves = 1;
+  _weHaveRotates = 1;
   int radius = 10;
   double dist;
 
@@ -216,12 +224,32 @@ int UnveilinWaves::ProcessWaves(IplImage *showImg)
   return 0;
 }
 
-int UnveilinWaves::ProcessRotate(IplImage *showImg) 
+int UnveilinWaves::ProcessRotates(IplImage *showImg) 
 {
-  double angle = 1.5f;
-  IplImage *rotated = rotateImage(showImg, angle);
-  cvCopy(rotated, showImg, NULL);
-  cvReleaseImage(&rotated);
+  //double angle = 1.5f;
+  int rotateFound = 0;
+  /*if(!isBackUp){
+	if(showImg){
+	  ori = cvCloneImage(showImg);
+	  isBackUp = true;
+	}
+  }
+  else{*/
+	if(_angle > 1){
+		_angle -= 2;
+		rotateFound = 1;
+	}
+    m_angle += _angle;
+    if(m_angle > 360.0f)m_angle -= 360.0f; 
+	
+	IplImage *rotated = rotateImage(ori, m_angle);
+	cvCopy(rotated, showImg, NULL);
+	cvReleaseImage(&rotated);
+    
+	
+	_weHaveRotates = rotateFound;
+  //}
+  
   return 0;
 }
 
@@ -250,8 +278,7 @@ IplImage *UnveilinWaves::rotateImage(const IplImage *src, float angleDegrees)
   sizeRotated.height = cvRound(h);
 
   // Rotate
-  IplImage *imageRotated = cvCreateImage( sizeRotated,
-      src->depth, src->nChannels );
+  IplImage *imageRotated = cvCreateImage( sizeRotated, src->depth, src->nChannels );
 
   // Transform the image
   cvGetQuadrangleSubPix( src, imageRotated, &M);

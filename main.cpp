@@ -86,6 +86,7 @@ IplImage *LoadAndResizeImage(const char* filename, int Height, int Width)
 int main(int argc, char** argv)
 {	
   const char *imagename = argc > 1 ? argv[1] : "./ArtImgSrc/000.jpg";  
+  IplImage *clone[IMG_COL_NUM * IMG_ROW_NUM];
   IplImage *faceImg = NULL;									// Original foreground image
   IplImage *unveilingImg = NULL;
   IplImage *artImgs[IMG_COL_NUM * IMG_ROW_NUM];				// Original background images
@@ -135,6 +136,7 @@ int main(int argc, char** argv)
       return -1;
     }
     singleUnveilingImg[i] = cvCloneImage(artImgs[i]);
+	
 
     artROIRect[i].x = HALF_INTERVAL_DIST + (IMG_WIDTH + HALF_INTERVAL_DIST * 2) * (i % IMG_COL_NUM);
     artROIRect[i].y = HALF_INTERVAL_DIST + (IMG_HEIGHT + HALF_INTERVAL_DIST * 2) * (i / IMG_COL_NUM);
@@ -235,10 +237,11 @@ int main(int argc, char** argv)
 
       // Start to play
       for (int i = 0; i < IMG_COL_NUM * IMG_ROW_NUM; i++) {
-        if (unveilinEffect[i]._weHaveWaves == 1) {										// Playing
+        if (unveilinEffect[i]._weHaveRotates == 1) {										// Playing
           continue;
         }
         if (changeOrder[i] == 1) {														// Change from foreground image to background image
+		  clone[i] = cvCloneImage(artImgs[i]);
           unveilinEffect[i].SetImage(faceImg, artImgs[i]);
           unveilinEffect[i].PutDrop(IMG_WIDTH / 4, IMG_HEIGHT / 4, 200);
           changeOrder[i] = 0;
@@ -247,7 +250,8 @@ int main(int argc, char** argv)
           last_effect_num[i] = 0;
         }
         else if (enable_time[i] != 0 && now_time >= enable_time[i]) {					// Change from background image to foreground image
-          unveilinEffect[i].SetImage(artImgs[i], faceImg);
+          clone[i] = cvCloneImage(faceImg);
+		  unveilinEffect[i].SetImage(artImgs[i], faceImg);
           unveilinEffect[i].PutDrop(IMG_WIDTH / 4, IMG_HEIGHT / 4, 200);
           changeOrder[i] = 1;
           start_time[i] = now_time;
@@ -261,18 +265,22 @@ int main(int argc, char** argv)
       }
     }
 
+	//IplImage *clone = cvCloneImage(singleUnveilingImg[i]);
+	//cvReleaseImage(&clone);
+	//cvCopy(src, dst);
 
     // Play animation
     cvZero(unveilingImg);
     for (int i = 0; i < IMG_COL_NUM * IMG_ROW_NUM; i++) {
       if (start_time[i]) {
         if (now_time - start_time[i] > freq * last_effect_num[i] / 30) {	// play for 30 fps
-          if (unveilinEffect[i]._weHaveWaves == 1){
-            unveilinEffect[i].ProcessWaves(singleUnveilingImg[i]);
+          if (unveilinEffect[i]._weHaveRotates == 1){
+            unveilinEffect[i].ProcessRotates(singleUnveilingImg[i]);
             last_effect_num[i]++;
           }
           else {	// End
-            unveilinEffect[i].ProcessRotate(singleUnveilingImg[i]);
+		    cvCopy(clone[i], singleUnveilingImg[i]);
+			cvReleaseImage(&clone[i]);
             enable_time[i] = 0;
             start_time[i] = 0;
             last_effect_num[i] = 0;
