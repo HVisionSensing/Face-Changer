@@ -16,7 +16,6 @@ UnveilinWaves::UnveilinWaves()
   _activeBuffer = 0;
   _scale=1;
   //chunku=================
-
   isLoaded = false;
   ori = NULL;
   m_angle = 0;
@@ -37,8 +36,9 @@ UnveilinWaves::UnveilinWaves(const IplImage *img1, const IplImage *img2)
     isLoaded = false;
   }
   m_angle = 0.0f;
+  isPreProcessed = false;
   ori = NULL;
-
+  times = 6;
 
 }
 
@@ -63,6 +63,7 @@ void UnveilinWaves::Reset()
   m_width = 0;
   m_img[0] = NULL;
   ori = NULL;
+  times = 6;
   m_img[1] = NULL;
   //chunku 0820 12:12
   _activeBuffer = 0;
@@ -347,4 +348,47 @@ int UnveilinWaves::adjustImage(IplImage* src, IplImage* dst,
   return 0;
 }
 
+int UnveilinWaves::ProcessHoughLines(IplImage *showImg){
+    cvSmooth(ori, showImg, CV_GAUSSIAN);
+    for(int i=0; i<15; ++i)
+        cvSmooth(showImg, showImg, CV_MEDIAN);
+    IplImage* dst = cvCreateImage( cvGetSize(ori), 8, 1 );
+    IplImage* color_dst = cvCreateImage( cvGetSize(ori), 8, 3 );
+    CvMemStorage* storage = cvCreateMemStorage(0);
+    CvSeq* lines = 0;
+	IplImage* src1=cvCreateImage(cvGetSize(ori),IPL_DEPTH_8U,1);
+    
+	cvCvtColor(ori, src1, CV_BGR2GRAY);  
+    cvCanny( src1, dst, 40, 300, 3 );
+
+    cvCvtColor( dst, color_dst, CV_GRAY2BGR );
+    
+    lines = cvHoughLines2( dst, storage, CV_HOUGH_PROBABILISTIC, 1, CV_PI/180, 80, 30, 10 );
+    for(int i = 0; i < lines->total; i++)
+    {
+        CvPoint* line = (CvPoint*)cvGetSeqElem(lines,i);
+        cvLine( color_dst, line[0], line[1], CV_RGB(0,0,0), 3, 8 );
+    }
+    times += 2;
+    if(times < 40){
+        _weHaveEffects = 1;
+    }
+    else {
+        times = 6;
+        _weHaveEffects = 0;
+    }
+    
+    //RgbImage color_dstA(color_dst);
+    for(int i=0;i<color_dst->height;i++) 
+      for(int j=0;j<(color_dst->width)*3;j++){
+        if((uchar)color_dst->imageData[i*3*(showImg->width)+j] >= 255)
+            showImg->imageData[i*3*(showImg->width)+j] = showImg->imageData[i*3*(showImg->width)+j]/times/times;
+        else showImg->imageData[i*3*(showImg->width)+j] = showImg->imageData[i*3*(showImg->width)+j];
+     }
+    
+    cvReleaseImage(&color_dst);
+    cvReleaseImage(&dst);
+    
+    return 0;
+}
 

@@ -15,6 +15,7 @@ class UnveilinWaves
     int _weHaveWaves; //deprecated
 	int _weHaveRotates; //deprecated
     int _weHaveEffects;
+    int ProcessHoughLines(IplImage *showImg);
     int ProcessRotates(IplImage *showImg);
     int ProcessNegate(IplImage *showImg);
     int ProcessSmooth(IplImage *showImg, int smoothType=CV_GAUSSIAN);
@@ -25,10 +26,12 @@ class UnveilinWaves
   private:
     IplImage *rotateImage(const IplImage *src, float angleDegrees);
     int adjustImage(IplImage* src, IplImage* dst, double low, double high, double bottom, double top, double gamma );
+    bool isPreProcessed;
 
 
   protected:
     bool isBackUp;
+    int times;
 	double m_angle;
     IplImage *ori;
     bool isLoaded;

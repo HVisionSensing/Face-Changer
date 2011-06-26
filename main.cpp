@@ -18,8 +18,8 @@
 #define HALF_INTERVAL_DIST	IMG_WIDTH / 8
 
 // Put 4 X 7 images in a window screen
-#define IMG_ROW_NUM			4
-#define IMG_COL_NUM			8
+#define IMG_ROW_NUM			6
+#define IMG_COL_NUM			7
 
 
 CvPoint MousePT;
@@ -98,7 +98,7 @@ void UpdateEnabledTime(int64 enable_time[],  const int &idx, const int64 &now_ti
   // Set unveiling effect enable times, clockwise
   // Center
   enable_time[idx] = now_time;
-  delay_sec = 0.2;
+  delay_sec = 0.1;
   // Left-Up
   key = idx - IMG_COL_NUM - 1;
   if (key >= 0 && key < IMG_COL_NUM * IMG_ROW_NUM && enable_time[key] == 0 && (idx % IMG_COL_NUM > 0)) {
@@ -146,6 +146,31 @@ void UpdateEnabledTime(int64 enable_time[],  const int &idx, const int64 &now_ti
   if (key >= 0 && key < IMG_COL_NUM * IMG_ROW_NUM && enable_time[key] == 0 && (idx % IMG_COL_NUM > 0)) {
     enable_time[key] = (int64) (now_time + freq * delay_sec);
   }
+
+  // Left
+  key = idx - 2;
+  if (key >= 0 && key < IMG_COL_NUM * IMG_ROW_NUM && enable_time[key] == 0 && (idx % IMG_COL_NUM > 0)) {
+    enable_time[key] = (int64) (now_time + freq * delay_sec);
+  }
+
+  // Left
+  key = idx - 2 * IMG_COL_NUM;
+  if (key >= 0 && key < IMG_COL_NUM * IMG_ROW_NUM && enable_time[key] == 0 && (idx % IMG_COL_NUM > 0)) {
+    enable_time[key] = (int64) (now_time + freq * delay_sec);
+  }
+
+  // Left
+  key = idx + 2;
+  if (key >= 0 && key < IMG_COL_NUM * IMG_ROW_NUM && enable_time[key] == 0 && (idx % IMG_COL_NUM > 0)) {
+    enable_time[key] = (int64) (now_time + freq * delay_sec);
+  }
+
+  // Left
+  key = idx + 2 * IMG_COL_NUM;
+  if (key >= 0 && key < IMG_COL_NUM * IMG_ROW_NUM && enable_time[key] == 0 && (idx % IMG_COL_NUM > 0)) {
+    enable_time[key] = (int64) (now_time + freq * delay_sec);
+  }
+
 
 }
 
@@ -286,18 +311,19 @@ int main(int argc, char** argv)
     cvZero(unveilingImg);
     for (int i = 0; i < IMG_COL_NUM * IMG_ROW_NUM; i++) {
       if (start_time[i]) {
-        if (now_time - start_time[i] > freq * last_effect_num[i] / 30) {	// play for 30 fps
+        if (now_time - start_time[i] > freq * last_effect_num[i] / 20) {	// play for 20 fps
           if (unveilinEffect[i]._weHaveEffects == 1){
-            switch(effect){
+            switch(idx%3){
               case 0:
-                //unveilinEffect[i].ProcessWaves(singleUnveilingImg[i]);
+                //;
                 unveilinEffect[i].ProcessRotates(singleUnveilingImg[i]);
                 break;
               case 1:
-                unveilinEffect[i].ProcessSmooth(singleUnveilingImg[i]);
+                unveilinEffect[i].ProcessHoughLines(singleUnveilingImg[i]);
                 break;
               case 2:
                 unveilinEffect[i].ProcessDilate(singleUnveilingImg[i]);
+                unveilinEffect[i].ProcessWaves(singleUnveilingImg[i]);
                 break;
               defaut:
                 ;
