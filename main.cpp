@@ -253,11 +253,6 @@ int main(int argc, char** argv)
           start_time[i] = now_time;
           last_effect_num[i] = 0;
         }
-        /*
-        else {
-          unveilinEffect[i].ProcessRotate(singleUnveilingImg[i]);
-        }
-        */
       }
     }
 
@@ -272,7 +267,6 @@ int main(int argc, char** argv)
             last_effect_num[i]++;
           }
           else {	// End
-            unveilinEffect[i].ProcessRotate(singleUnveilingImg[i]);
             enable_time[i] = 0;
             start_time[i] = 0;
             last_effect_num[i] = 0;

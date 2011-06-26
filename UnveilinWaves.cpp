@@ -218,10 +218,20 @@ int UnveilinWaves::ProcessWaves(IplImage *showImg)
 
 int UnveilinWaves::ProcessRotate(IplImage *showImg) 
 {
-  double angle = 1.5f;
+  double angle = 5.f;
   IplImage *rotated = rotateImage(showImg, angle);
   cvCopy(rotated, showImg, NULL);
   cvReleaseImage(&rotated);
+  return 0;
+}
+
+
+int UnveilinWaves::ProcessNegate(IplImage *showImg) 
+{
+  IplImage *negated = cvCloneImage(showImg);
+  adjustImage(showImg, negated, 0, 1, 1, 0, 1);
+  cvCopy(negated, showImg, NULL);
+  cvReleaseImage(&negated);
   return 0;
 }
 
@@ -258,3 +268,38 @@ IplImage *UnveilinWaves::rotateImage(const IplImage *src, float angleDegrees)
 
   return imageRotated;
 }
+
+
+int UnveilinWaves::adjustImage(IplImage* src, IplImage* dst, 
+    double low, double high,   // X方向：low and high are the intensities of src
+    double bottom, double top, // Y方向：mapped to bottom and top of dst
+    double gamma )
+{
+  if(   low<0 && low>1 && high <0 && high>1&&
+      bottom<0 && bottom>1 && top<0 && top>1 && low>high)
+    return -1;
+  double low2 = low*255;
+  double high2 = high*255;
+  double bottom2 = bottom*255;
+  double top2 = top*255;
+  double err_in = high2 - low2;
+  double err_out = top2 - bottom2;
+
+  int x,y;
+  double val;
+
+  // intensity transform
+  for( y = 0; y < src->height; y++)
+  {
+    for (x = 0; x < src->width; x++)
+    {
+      val = ((uchar*)(src->imageData + src->widthStep*y))[x]; 
+      val = pow((val - low2)/err_in, gamma) * err_out + bottom2;
+      if(val>255) val=255; if(val<0) val=0; // Make sure src is in the range [low,high]
+      ((uchar*)(dst->imageData + dst->widthStep*y))[x] = (uchar) val;
+    }
+  }
+  return 0;
+}
+
+

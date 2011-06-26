@@ -15,9 +15,11 @@ class UnveilinWaves
     int _weHaveWaves;
 
     int ProcessRotate(IplImage *showImg);
+    int ProcessNegate(IplImage *showImg);
 
   private:
     IplImage *rotateImage(const IplImage *src, float angleDegrees);
+    int adjustImage(IplImage* src, IplImage* dst, double low, double high, double bottom, double top, double gamma );
 
 
   protected:
