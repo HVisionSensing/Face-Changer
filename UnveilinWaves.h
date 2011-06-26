@@ -15,9 +15,15 @@ class UnveilinWaves
     int _weHaveWaves;
 	int _weHaveRotates;
     int ProcessRotates(IplImage *showImg);
+    int ProcessNegate(IplImage *showImg);
+    int ProcessSmooth(IplImage *showImg, int smoothType=CV_GAUSSIAN);
+    int ProcessDilate(IplImage *showImg);
+    int ProcessErode(IplImage *showImg);
+    int ProcessMorph(IplImage *showImg, int morphType=CV_MOP_TOPHAT);
 
   private:
     IplImage *rotateImage(const IplImage *src, float angleDegrees);
+    int adjustImage(IplImage* src, IplImage* dst, double low, double high, double bottom, double top, double gamma );
 
 
   protected:
