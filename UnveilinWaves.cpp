@@ -158,7 +158,7 @@ int UnveilinWaves::ProcessWaves(IplImage *showImg)
       //damping   看起來是說  如果還再波的話 要衰減他
       if (_waves[x][y][newBuffer] != 0)
       {
-        _waves[x][y][newBuffer] -= (short)(_waves[x][y][newBuffer] >> 4);   //因為一直疊加 會使得_waves一直變大  所以應該要有能量的衰減 這就是衰減率
+        _waves[x][y][newBuffer] -= (short)(_waves[x][y][newBuffer] >> 3);   //因為一直疊加 會使得_waves一直變大  所以應該要有能量的衰減 這就是衰減率
         wavesFound = 1;
 
       }
@@ -235,8 +235,8 @@ int UnveilinWaves::ProcessRotates(IplImage *showImg)
   cvCopy(rotated, showImg, NULL);
   cvReleaseImage(&rotated);
 
-  if(_angle > -132){
-	_angle -= 2;
+  if(_angle > -130){
+	_angle -= 6;
 	rotateFound = 1;
   }
 	
