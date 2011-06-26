@@ -4,6 +4,8 @@
 #include <cstdio>
 #include <time.h>
 #include <math.h>
+#include <cstdlib>
+#include <ctime>
 
 #include "opencvheader.h"
 #include "UnveilinWaves.h"
@@ -198,6 +200,7 @@ int main(int argc, char** argv)
   int64 now_time;
   double freq = cv::getTickFrequency();						// Tick frequency
   int key, idx;
+  int lockon[IMG_COL_NUM * IMG_ROW_NUM] = {0};
 
 
   srand((unsigned int) time(NULL));
@@ -294,6 +297,7 @@ int main(int argc, char** argv)
           start_time[i] = now_time;
           enable_time[i] = 0;
           last_effect_num[i] = 0;
+		  lockon[i] = rand()%3;
         }
         else if (enable_time[i] != 0 && now_time >= enable_time[i]) {					// Change from background image to foreground image
           clone[i] = cvCloneImage(faceImg);
@@ -302,6 +306,7 @@ int main(int argc, char** argv)
           changeOrder[i] = 1;
           start_time[i] = now_time;
           last_effect_num[i] = 0;
+		  lockon[i] = rand()%3;
         }
       }
     }
@@ -316,7 +321,8 @@ int main(int argc, char** argv)
       if (start_time[i]) {
         if (now_time - start_time[i] > freq * last_effect_num[i] / 20) {	// play for 20 fps
           if (unveilinEffect[i]._weHaveEffects == 1){
-            switch(idx%3){
+            switch(lockon[i]){
+			//switch(idx%3){
               case 0:
                 //;
                 unveilinEffect[i].ProcessRotates(singleUnveilingImg[i]);
