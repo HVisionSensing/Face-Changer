@@ -89,7 +89,7 @@ int UnveilinWaves::SetImage(const IplImage *img1, const IplImage *img2)
   cvResize(img2, m_img[1], CV_INTER_CUBIC);
   /*  chunku 0820 12:11 */
 
-  _angle = 359;
+  _angle = 177;
   _waveWidth = m_width >> _scale;
   _waveHeight = m_height >> _scale;
   _waves = new short** [_waveWidth];
@@ -227,16 +227,17 @@ int UnveilinWaves::ProcessWaves(IplImage *showImg)
 int UnveilinWaves::ProcessRotates(IplImage *showImg) 
 {
   int rotateFound = 0;
-  if(_angle > 1){
-	_angle -= 2;
-	rotateFound = 1;
-  }
-  m_angle += _angle;
+
+  m_angle += abs(_angle);
   if(m_angle > 360.0f)m_angle -= 360.0f; 
   IplImage *rotated = rotateImage(ori, m_angle);
   cvCopy(rotated, showImg, NULL);
   cvReleaseImage(&rotated);
-    
+
+  if(_angle > -177){
+	_angle -= 2;
+	rotateFound = 1;
+  }
 	
   _weHaveEffects = rotateFound;
   //}
