@@ -235,6 +235,33 @@ int UnveilinWaves::ProcessNegate(IplImage *showImg)
   return 0;
 }
 
+int UnveilinWaves::ProcessSmooth(IplImage *showImg, int smoothType)
+{
+  // CV_GAUSSIAN, CV_BLUR_NO_SCALE, CV_MEDIA, CV_BLUR, CV_BILATERAL
+  cvSmooth(showImg, showImg, smoothType); 
+  return 0;
+}
+
+int UnveilinWaves::ProcessDilate(IplImage *showImg)
+{
+  cvDilate(showImg, showImg);
+  return 0;
+}
+
+int UnveilinWaves::ProcessErode(IplImage *showImg)
+{
+  cvDilate(showImg, showImg);
+  return 0;
+}
+
+int UnveilinWaves::ProcessMorph(IplImage *showImg, int morphType)
+{
+  IplConvKernel  *kernel = cvCreateStructuringElementEx(6,6,2,3,CV_SHAPE_ELLIPSE);
+  // CV_COM_OPEN, CV_MOP_CLOSE, CV_MOP_GRADIENT, CV_MOP_TOPHAT, CV_MOP_BLACKHAT
+  cvMorphologyEx(showImg, showImg, NULL, kernel, morphType );
+  return 0;
+}
+
 
 // Rotate the image clockwise (or counter-clockwise if negative).
 // Remember to free the returned image.
