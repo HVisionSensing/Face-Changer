@@ -384,7 +384,7 @@ int UnveilinWaves::ProcessHoughLines(IplImage *showImg){
     //RgbImage color_dstA(color_dst);
     for(int i=0;i<color_dst->height;i++) 
       for(int j=0;j<(color_dst->width)*3;j++){
-        if((uchar)color_dst->imageData[i*3*(showImg->width)+j] >= 255)
+        if((uchar)color_dst->imageData[i*3*(showImg->width)+j] >= 250)
             showImg->imageData[i*3*(showImg->width)+j] = showImg->imageData[i*3*(showImg->width)+j]/times/times;
         else showImg->imageData[i*3*(showImg->width)+j] = showImg->imageData[i*3*(showImg->width)+j];
      }
