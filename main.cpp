@@ -297,7 +297,7 @@ int main(int argc, char** argv)
           start_time[i] = now_time;
           enable_time[i] = 0;
           last_effect_num[i] = 0;
-		  lockon[i] = rand()%3;
+		  lockon[i] = rand()%5;
         }
         else if (enable_time[i] != 0 && now_time >= enable_time[i]) {					// Change from background image to foreground image
           clone[i] = cvCloneImage(faceImg);
@@ -306,7 +306,7 @@ int main(int argc, char** argv)
           changeOrder[i] = 1;
           start_time[i] = now_time;
           last_effect_num[i] = 0;
-		  lockon[i] = rand()%3;
+		  lockon[i] = rand()%5;
         }
       }
     }
@@ -328,9 +328,11 @@ int main(int argc, char** argv)
                 unveilinEffect[i].ProcessRotates(singleUnveilingImg[i]);
                 break;
               case 1:
+              case 3:
                 unveilinEffect[i].ProcessHoughLines(singleUnveilingImg[i]);
                 break;
               case 2:
+              case 4:
                 unveilinEffect[i].ProcessDilate(singleUnveilingImg[i]);
                 unveilinEffect[i].ProcessWaves(singleUnveilingImg[i]);
                 break;
