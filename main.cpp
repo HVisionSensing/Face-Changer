@@ -21,7 +21,7 @@
 
 // Put 4 X 7 images in a window screen
 #define IMG_ROW_NUM			6
-#define IMG_COL_NUM			7
+#define IMG_COL_NUM			9
 
 
 CvPoint MousePT;
